@@ -1,0 +1,1 @@
+<button onclick="startGame('Start the game?)">startGame</button>
