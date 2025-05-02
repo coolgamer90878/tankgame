@@ -14,6 +14,7 @@
     padding-top: 20px; 
     background: linear-gradient(to right, black 30%, white 70%);
     -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
     font-family: 'Press Start 2P', cursive; /* Makes the title pixelated */
   }
@@ -38,5 +39,44 @@
   <body>
     <h1 class="title">Tankgame!</h1>
     <button onclick="startGame()">Start the tank game</button>
+    <img id="player" src="p1.png" alt="Player 1" />
+  
+    <script>
+    const player = document.getElementById('player');
+  let x = 200; // Initial x position
+  let y = 100; // Initial y position
+  let rotation = 0; // Initial rotation angle
+
+  // Set initial position
+  player.style.position = 'absolute';
+  player.style.left = x + 'px';
+  player.style.top = y + 'px';
+
+  // Listen for key presses
+  document.addEventListener('keydown', (event) => {
+    const step = 10; // Movement step size
+    if (event.key === 'ArrowUp') {
+      y -= step; // Move up
+      rotation = 0; // Face upward
+    }
+    if (event.key === 'ArrowDown') {
+      y += step; // Move down
+      rotation = 180; // Face downward
+    }
+    if (event.key === 'ArrowLeft') {
+      x -= step; // Move left
+      rotation = -90; // Face left
+    }
+    if (event.key === 'ArrowRight') {
+      x += step; // Move right
+      rotation = 90; // Face right
+    }
+
+    // Update position and rotation
+    player.style.left = x + 'px';
+    player.style.top = y + 'px';
+    player.style.transform = `rotate(${rotation}deg)`;
+  });
+    </script>
   </body>
 </html>
