@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="game.js">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+      #player {
+    width: 100px; /* Set the desired width */
+    height: 100px; /* Set the desired height */
+    position: absolute; /* Ensure it remains positioned absolutely */
+  }
       html, body {
         margin: 0;
         padding: 0;
@@ -49,62 +54,66 @@
     <img id="player" src="p1.png" alt="Player 1" />
 
     <script>
-      function startGame() {
-        // Replace the entire body content with the image
-        document.body.innerHTML = `<img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">`;
+     function startGame() {
+    // Replace the entire body content with the game screen and include the tank
+    document.body.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+        <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
+        <img id="player" src="p1.png" alt="Player 1">
+      </div>
+    `;
+
+    // Reinitialize the player element and its position
+    const player = document.getElementById('player');
+    let x = 140; // Initial x position
+    let y = 450; // Initial y position
+    let rotation = 0; // Initial rotation angle
+    const step = 5; // Movement step size
+    const keys = {}; // Object to track pressed keys
+
+    // Set initial position
+    player.style.left = x + 'px';
+    player.style.top = y + 'px';
+
+    // Listen for keydown and keyup events
+    document.addEventListener('keydown', (event) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+        keys[event.key] = true; // Mark the key as pressed
       }
-      
+    });
 
-      const player = document.getElementById('player');
-      let x = 140; // Initial x position
-      let y = 450; // Initial y position
-      let rotation = 0; // Initial rotation angle
-      const step = 5; // Movement step size
-      const keys = {}; // Object to track pressed keys
+    document.addEventListener('keyup', (event) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        keys[event.key] = false; // Mark the key as released
+      }
+    });
 
-      // Set initial position
-      player.style.position = 'absolute';
+    // Update tank position continuously
+    setInterval(() => {
+      if (keys['ArrowUp']) {
+        y -= step; // Move up
+        rotation = -180; // Face upward
+      }
+      if (keys['ArrowDown']) {
+        y += step; // Move down
+        rotation = 0; // Face downward
+      }
+      if (keys['ArrowLeft']) {
+        x -= step; // Move left
+        rotation = -270; // Face left
+      }
+      if (keys['ArrowRight']) {
+        x += step; // Move right
+        rotation = 270; // Face right
+      }
+
+      // Update position and rotation
       player.style.left = x + 'px';
       player.style.top = y + 'px';
-
-      // Listen for keydown and keyup events
-      document.addEventListener('keydown', (event) => {
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-          event.preventDefault();
-          keys[event.key] = true; // Mark the key as pressed
-        }
-      });
-
-      document.addEventListener('keyup', (event) => {
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-          keys[event.key] = false; // Mark the key as released
-        }
-      });
-
-      // Update tank position continuously
-      setInterval(() => {
-        if (keys['ArrowUp']) {
-          y -= step; // Move up
-          rotation = -180; // Face upward
-        }
-        if (keys['ArrowDown']) {
-          y += step; // Move down
-          rotation = 0; // Face downward
-        }
-        if (keys['ArrowLeft']) {
-          x -= step; // Move left
-          rotation = -270; // Face left
-        }
-        if (keys['ArrowRight']) {
-          x += step; // Move right
-          rotation = 270; // Face right
-        }
-
-        // Update position and rotation
-        player.style.left = x + 'px';
-        player.style.top = y + 'px';
-        player.style.transform = `rotate(${rotation}deg)`;
-      }, 20);
+      player.style.transform = `rotate(${rotation}deg)`;
+    }, 20);
+  }
     </script>
   </body>
 </html>
