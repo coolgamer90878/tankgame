@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="game.js">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+      
        .title {
     text-align: center; 
     margin-top: 0; 
@@ -40,14 +41,13 @@
     <h1 class="title">Tankgame!</h1>
     <button onclick="startGame()">Start the tank game</button>
     <img id="player" src="p1.png" alt="Player 1" />
+    <img id="player" src="p2.png" alt="Player 2" />
   
     <script>
-    const player = document.getElementById('player');
+   const player = document.getElementById('player');
   let x = 200; // Initial x position
   let y = 100; // Initial y position
   let rotation = 0; // Initial rotation angle
-  const step = 5; // Movement step size
-  const keys = {}; // Object to track pressed keys
 
   // Set initial position
   player.style.position = 'absolute';
@@ -56,23 +56,10 @@
 
   // Listen for keydown and keyup events
   document.addEventListener('keydown', (event) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-      event.preventDefault();
-      keys[event.key] = true; // Mark the key as pressed
-    }
-  });
-
-  document.addEventListener('keyup', (event) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-      keys[event.key] = false; // Mark the key as released
-    }
-  });
-
-  // Update tank position continuously
-  setInterval(() => {
-    if (keys['ArrowUp']) {
+    const step = 10; // Movement step size
+    if (event.key === 'ArrowUp') {
       y -= step; // Move up
-      rotation = -180; // Face upward
+      rotation = 0; // Face upward
     }
     if (keys['ArrowDown']) {
       y += step; // Move down
@@ -91,7 +78,7 @@
     player.style.left = x + 'px';
     player.style.top = y + 'px';
     player.style.transform = `rotate(${rotation}deg)`;
-  }, 20);
+  });
     </script>
   </body>
 </html>
