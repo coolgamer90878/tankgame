@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tank Game!</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="game.js">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-      #player {
-    width: 100px; /* Set the desired width */
-    height: 100px; /* Set the desired height */
-    position: absolute; /* Ensure it remains positioned absolutely */
-  }
+      #player1, #player2 {
+        width: 100px; /* Set the desired width */
+        height: 100px; /* Set the desired height */
+        position: absolute; /* Ensure absolute positioning */
+      }
+
       html, body {
         margin: 0;
         padding: 0;
@@ -31,7 +31,7 @@
         color: transparent;
         font-family: 'Press Start 2P', cursive; /* Makes the title pixelated */
       }
-      
+
       button {
         display: block;
         margin: 20px auto;
@@ -51,69 +51,99 @@
   <body>
     <h1 class="title">Tankgame!</h1>
     <button onclick="startGame()">Start the tank game</button>
-    <img id="player" src="p1.png" alt="Player 1" />
 
     <script>
-     function startGame() {
-    // Replace the entire body content with the game screen and include the tank
-    document.body.innerHTML = `
-      <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-        <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
-        <img id="player" src="p1.png" alt="Player 1">
-      </div>
-    `;
+      function startGame() {
+        // Replace the entire body content with the game screen and include both tanks
+        document.body.innerHTML = `
+          <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
+            <img id="player1" src="p1.png" alt="Player 1">
+            <img id="player2" src="p2.png" alt="Player 2">
+          </div>
+        `;
 
-    // Reinitialize the player element and its position
-    const player = document.getElementById('player');
-    let x = 140; // Initial x position
-    let y = 450; // Initial y position
-    let rotation = 0; // Initial rotation angle
-    const step = 5; // Movement step size
-    const keys = {}; // Object to track pressed keys
+        // Reinitialize the player elements and their positions
+        const player1 = document.getElementById('player1');
+        const player2 = document.getElementById('player2');
 
-    // Set initial position
-    player.style.left = x + 'px';
-    player.style.top = y + 'px';
+        // Player 1 initial position and controls
+        let x1 = 140; // Initial x position for Player 1
+        let y1 = 450; // Initial y position for Player 1
+        let rotation1 = 0; // Initial rotation angle for Player 1
 
-    // Listen for keydown and keyup events
-    document.addEventListener('keydown', (event) => {
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        event.preventDefault();
-        keys[event.key] = true; // Mark the key as pressed
-      }
-    });
+        // Player 2 initial position and controls
+        let x2 = 300; // Initial x position for Player 2
+        let y2 = 450; // Initial y position for Player 2
+        let rotation2 = 0; // Initial rotation angle for Player 2
 
-    document.addEventListener('keyup', (event) => {
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        keys[event.key] = false; // Mark the key as released
-      }
-    });
+        const step = 5; // Movement step size
+        const keys = {}; // Object to track pressed keys
 
-    // Update tank position continuously
-    setInterval(() => {
-      if (keys['ArrowUp']) {
-        y -= step; // Move up
-        rotation = -180; // Face upward
-      }
-      if (keys['ArrowDown']) {
-        y += step; // Move down
-        rotation = 0; // Face downward
-      }
-      if (keys['ArrowLeft']) {
-        x -= step; // Move left
-        rotation = -270; // Face left
-      }
-      if (keys['ArrowRight']) {
-        x += step; // Move right
-        rotation = 270; // Face right
-      }
+        // Set initial positions
+        player1.style.left = x1 + 'px';
+        player1.style.top = y1 + 'px';
 
-      // Update position and rotation
-      player.style.left = x + 'px';
-      player.style.top = y + 'px';
-      player.style.transform = `rotate(${rotation}deg)`;
-    }, 20);
-  }
+        player2.style.left = x2 + 'px';
+        player2.style.top = y2 + 'px';
+
+        // Listen for keydown and keyup events
+        document.addEventListener('keydown', (event) => {
+          keys[event.key] = true; // Mark the key as pressed
+        });
+
+        document.addEventListener('keyup', (event) => {
+          keys[event.key] = false; // Mark the key as released
+        });
+
+        // Update tank positions continuously
+        setInterval(() => {
+          // Player 1 controls (Arrow keys)
+          if (keys['ArrowUp']) {
+            y1 -= step; // Move up
+            rotation1 = -180; // Face upward
+          }
+          if (keys['ArrowDown']) {
+            y1 += step; // Move down
+            rotation1 = 0; // Face downward
+          }
+          if (keys['ArrowLeft']) {
+            x1 -= step; // Move left
+            rotation1 = -270; // Face left
+          }
+          if (keys['ArrowRight']) {
+            x1 += step; // Move right
+            rotation1 = 270; // Face right
+          }
+
+          // Player 2 controls (WASD keys)
+          if (keys['w']) {
+            y2 -= step; // Move up
+            rotation2 = -180; // Face upward
+          }
+          if (keys['s']) {
+            y2 += step; // Move down
+            rotation2 = 0; // Face downward
+          }
+          if (keys['a']) {
+            x2 -= step; // Move left
+            rotation2 = -270; // Face left
+          }
+          if (keys['d']) {
+            x2 += step; // Move right
+            rotation2 = 270; // Face right
+          }
+
+          // Update positions and rotations
+          player1.style.left = x1 + 'px';
+          player1.style.top = y1 + 'px';
+          player1.style.transform = `rotate(${rotation1}deg)`;
+
+          player2.style.left = x2 + 'px';
+          player2.style.top = y2 + 'px';
+          player2.style.transform = `rotate(${rotation2}deg)`;
+        }, 20);
+      }
     </script>
   </body>
 </html>
