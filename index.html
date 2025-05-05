@@ -46,37 +46,52 @@
   let x = 200; // Initial x position
   let y = 100; // Initial y position
   let rotation = 0; // Initial rotation angle
+  const step = 5; // Movement step size
+  const keys = {}; // Object to track pressed keys
 
   // Set initial position
   player.style.position = 'absolute';
   player.style.left = x + 'px';
   player.style.top = y + 'px';
 
-  // Listen for key presses
+  // Listen for keydown and keyup events
   document.addEventListener('keydown', (event) => {
-    const step = 10; // Movement step size
-    if (event.key === 'ArrowUp') {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      event.preventDefault();
+      keys[event.key] = true; // Mark the key as pressed
+    }
+  });
+
+  document.addEventListener('keyup', (event) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      keys[event.key] = false; // Mark the key as released
+    }
+  });
+
+  // Update tank position continuously
+  setInterval(() => {
+    if (keys['ArrowUp']) {
       y -= step; // Move up
-      rotation = 0; // Face upward
+      rotation = -180; // Face upward
     }
-    if (event.key === 'ArrowDown') {
+    if (keys['ArrowDown']) {
       y += step; // Move down
-      rotation = 180; // Face downward
+      rotation = 0; // Face downward
     }
-    if (event.key === 'ArrowLeft') {
+    if (keys['ArrowLeft']) {
       x -= step; // Move left
-      rotation = -90; // Face left
+      rotation = -270; // Face left
     }
-    if (event.key === 'ArrowRight') {
+    if (keys['ArrowRight']) {
       x += step; // Move right
-      rotation = 90; // Face right
+      rotation = 270; // Face right
     }
 
     // Update position and rotation
     player.style.left = x + 'px';
     player.style.top = y + 'px';
     player.style.transform = `rotate(${rotation}deg)`;
-  });
+  }, 20);
     </script>
   </body>
 </html>
