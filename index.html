@@ -119,19 +119,19 @@
           // Player 2 controls (WASD keys)
           if (keys['w']) {
             y2 -= step; // Move up
-            rotation2 = -180; // Face upward
+            rotation2 = -0; // Face upward
           }
           if (keys['s']) {
             y2 += step; // Move down
-            rotation2 = 0; // Face downward
+            rotation2 = 180; // Face downward
           }
           if (keys['a']) {
             x2 -= step; // Move left
-            rotation2 = -270; // Face left
+            rotation2 = 270; // Face left
           }
           if (keys['d']) {
             x2 += step; // Move right
-            rotation2 = 270; // Face right
+            rotation2 = -270; // Face right
           }
 
           // Update positions and rotations
