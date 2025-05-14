@@ -52,138 +52,183 @@
     <h1 class="title">Tankgame!</h1>
     <button onclick="startGame()">Start the tank game</button>
 
-    <script>
-      function startGame() {
-        document.addEventListener('click', () => {
-  // Create the gray cube (bullet)
-  const bullet = document.createElement('div');
-  bullet.style.width = '10px';
-  bullet.style.height = '10px';
-  bullet.style.backgroundColor = 'gray';
-  bullet.style.position = 'absolute';
-  bullet.style.borderRadius = '50%'; // Optional: Make it circular
-  bullet.style.left = `${x1 + 45}px`; // Center of Player 1 (adjust for tank size)
-  bullet.style.top = `${y1 + 45}px`; // Center of Player 1 (adjust for tank size)
+   <script>
+  function startGame() {
+    document.addEventListener('click', () => {
+      // Create the gray cube (bullet) for Player 1
+      const bullet = document.createElement('div');
+      bullet.style.width = '10px';
+      bullet.style.height = '10px';
+      bullet.style.backgroundColor = 'gray';
+      bullet.style.position = 'absolute';
+      bullet.style.borderRadius = '50%'; // Optional to Make it circular
+      bullet.style.left = `${x1 + 49}px`; // Center of Player 1 (adjust for tank size)
+      bullet.style.top = `${y1 + 70}px`; // Center of Player 1 (adjust for tank size)
 
-  // Add the bullet to the game screen
-  document.body.appendChild(bullet);
+      // Add the bullet to the game screen
+      document.body.appendChild(bullet);
 
-  // Calculate movement direction based on rotation (opposite direction)
-  const angle = (rotation1 - 90 + 180) * (Math.PI / 180); // Adjust rotation to shoot in the opposite direction
-  const speed = 10; // Speed of the bullet
-  let bulletX = x1 + 45; // Initial x position of the bullet
-  let bulletY = y1 + 45; // Initial y position of the bullet
+      // Calculate movement direction based on rotation (opposite direction)
+      const angle = (rotation1 - 90 + 180) * (Math.PI / 180); // Adjust rotation to shoot in the opposite direction
+      const speed = 10; // Speed of the bullet
+      let bulletX = x1 + 50; // Initial x position of the bullet for Player 1
+      let bulletY = y1 + 45; // Initial y position of the bullet for Player 1
 
-  // Animate the bullet
-  const interval = setInterval(() => {
-    bulletX += Math.cos(angle) * speed; // Move in the x direction
-    bulletY += Math.sin(angle) * speed; // Move in the y direction
+      // Animate the bullet
+      const interval = setInterval(() => {
+        bulletX += Math.cos(angle) * speed; // Move in the x direction
+        bulletY += Math.sin(angle) * speed; // Move in the y direction
 
-    bullet.style.left = `${bulletX}px`;
-    bullet.style.top = `${bulletY}px`;
+        bullet.style.left = `${bulletX}px`;
+        bullet.style.top = `${bulletY}px`;
 
-    // Remove the bullet if it goes off-screen
-    if (
-      bulletX < 0 ||
-      bulletX > window.innerWidth ||
-      bulletY < 0 ||
-      bulletY > window.innerHeight
-    ) {
-      clearInterval(interval); // Stop the animation
-      bullet.remove(); // Remove the bullet from the DOM
-    }
-  }, 20); // Update every 20ms
-});
-        // Replace the entire body content with the game screen and include both tanks
-        document.body.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
-            <img id="player1" src="p1.png" alt="Player 1">
-            <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
-          </div>
-        `;
+        // Remove the bullet if it goes off-screen
+        if (
+          bulletX < 0 ||
+          bulletX > window.innerWidth ||
+          bulletY < 0 ||
+          bulletY > window.innerHeight
+        ) {
+          clearInterval(interval); // Stop the animation
+          bullet.remove(); // Remove the bullet from the DOM
+        }
+      }, 20); // Update every 20ms
+    });
 
-        // Reinitialize the player elements and their positions
-        const player1 = document.getElementById('player1');
-        const player2 = document.getElementById('player2');
+    // Add event listener for Player 2 shooting with spacebar
+    document.addEventListener('keydown', (event) => {
+      if (event.key === ' ') {
+        // Create the gray cube (bullet) for Player 2
+        const bullet = document.createElement('div');
+        bullet.style.width = '10px';
+        bullet.style.height = '10px';
+        bullet.style.backgroundColor = 'gray';
+        bullet.style.position = 'absolute';
+        bullet.style.borderRadius = '50%'; // Optional: Make it circular
+        bullet.style.left = `${x2 + 49}px`; // Center of Player 2 (adjust for tank size)
+        bullet.style.top = `${y2 + 70}px`; // Center of Player 2 (adjust for tank size)
 
-        // Player 1 initial position and controls
-        let x1 = 140; // Initial x position for Player 1
-        let y1 = 450; // Initial y position for Player 1
-        let rotation1 = 0; // Initial rotation angle for Player 1
+        // Add the bullet to the game screen
+        document.body.appendChild(bullet);
 
-        // Player 2 initial position and controls
-        let x2 = 300; // Initial x position for Player 2
-        let y2 = 450; // Initial y position for Player 2
-        let rotation2 = 0; // Initial rotation angle for Player 2
+        // Calculate movement direction based on rotation
+        const angle = (rotation2 - 90 + 0) * (Math.PI / 180); // Adjust rotation to shoot in the opposite direction
+        const speed = 10; // Speed of the bullet
+        let bulletX = x2 + 0; // Initial x position of the bullet for Player 2
+        let bulletY = y2 + 45; // Initial y position of the bullet for Player 2
 
-        const step = 5; // Movement step size
-        const keys = {}; // Object to track pressed keys
+        // Animate the bullet
+        const interval = setInterval(() => {
+          bulletX += Math.cos(angle) * speed; // Move in the x direction
+          bulletY += Math.sin(angle) * speed; // Move in the y direction
 
-        // Set initial positions
-        player1.style.left = x1 + 'px';
-        player1.style.top = y1 + 'px';
+          bullet.style.left = `${bulletX}px`;
+          bullet.style.top = `${bulletY}px`;
 
-        player2.style.left = x2 + 'px';
-        player2.style.top = y2 + 'px';
-
-        // Listen for keydown and keyup events
-        document.addEventListener('keydown', (event) => {
-          keys[event.key] = true; // Mark the key as pressed
-        });
-
-        document.addEventListener('keyup', (event) => {
-          keys[event.key] = false; // Mark the key as released
-        });
-
-        // Update tank positions continuously
-        setInterval(() => {
-          // Player 1 controls (Arrow keys)
-          if (keys['ArrowUp']) {
-            y1 -= step; // Move up
-            rotation1 = -180; // Face upward
+          // Remove the bullet if it goes off-screen
+          if (
+            bulletX < 0 ||
+            bulletX > window.innerWidth ||
+            bulletY < 0 ||
+            bulletY > window.innerHeight
+          ) {
+            clearInterval(interval); // Stop the animation
+            bullet.remove(); // Remove the bullet from the DOM
           }
-          if (keys['ArrowDown']) {
-            y1 += step; // Move down
-            rotation1 = 0; // Face downward
-          }
-          if (keys['ArrowLeft']) {
-            x1 -= step; // Move left
-            rotation1 = -270; // Face left
-          }
-          if (keys['ArrowRight']) {
-            x1 += step; // Move right
-            rotation1 = 270; // Face right
-          }
-
-          // Player 2 controls (WASD keys)
-          if (keys['w']) {
-            y2 -= step; // Move up
-            rotation2 = -0; // Face upward
-          }
-          if (keys['s']) {
-            y2 += step; // Move down
-            rotation2 = 180; // Face downward
-          }
-          if (keys['a']) {
-            x2 -= step; // Move left
-            rotation2 = 270; // Face left
-          }
-          if (keys['d']) {
-            x2 += step; // Move right
-            rotation2 = -270; // Face right
-          }
-
-          // Update positions and rotations
-          player1.style.left = x1 + 'px';
-          player1.style.top = y1 + 'px';
-          player1.style.transform = `rotate(${rotation1}deg)`;
-
-          player2.style.left = x2 + 'px';
-          player2.style.top = y2 + 'px';
-          player2.style.transform = `rotate(${rotation2}deg)`;
-        }, 20);
+        }, 20); // Update every 20ms
       }
-    </script>
+    });
+
+    // Replace the entire body content with the game screen and include both tanks
+    document.body.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+        <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
+        <img id="player1" src="p1.png" alt="Player 1">
+        <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
+      </div>
+    `;
+
+    // Reinitialize the player elements and their positions
+    const player1 = document.getElementById('player1');
+    const player2 = document.getElementById('player2');
+
+    // Player 1 initial position and controls
+    let x1 = 140; // Initial x position for Player 1
+    let y1 = 450; // Initial y position for Player 1
+    let rotation1 = 0; // Initial rotation angle for Player 1
+
+    // Player 2 initial position and controls
+    let x2 = 300; // Initial x position for Player 2
+    let y2 = 450; // Initial y position for Player 2
+    let rotation2 = 0; // Initial rotation angle for Player 2
+
+    const step = 5; // Movement step size
+    const keys = {}; // Object to track pressed keys
+
+    // Set initial positions
+    player1.style.left = x1 + 'px';
+    player1.style.top = y1 + 'px';
+
+    player2.style.left = x2 + 'px';
+    player2.style.top = y2 + 'px';
+
+    // Listen for keydown and keyup events
+    document.addEventListener('keydown', (event) => {
+      keys[event.key] = true; // Mark the key as pressed
+    });
+
+    document.addEventListener('keyup', (event) => {
+      keys[event.key] = false; // Mark the key as released
+    });
+
+    // Update tank positions continuously
+    setInterval(() => {
+      // Player 1 controls (Arrow keys)
+      if (keys['ArrowUp']) {
+        y1 -= step; // Move up
+        rotation1 = -180; // Face upward
+      }
+      if (keys['ArrowDown']) {
+        y1 += step; // Move down
+        rotation1 = 0; // Face downward
+      }
+      if (keys['ArrowLeft']) {
+        x1 -= step; // Move left
+        rotation1 = -270; // Face left
+      }
+      if (keys['ArrowRight']) {
+        x1 += step; // Move right
+        rotation1 = 270; // Face right
+      }
+
+      // Player 2 controls (WASD keys)
+      if (keys['w']) {
+        y2 -= step; // Move up
+        rotation2 = -0; // Face upward
+      }
+      if (keys['s']) {
+        y2 += step; // Move down
+        rotation2 = 180; // Face downward
+      }
+      if (keys['a']) {
+        x2 -= step; // Move left
+        rotation2 = 270; // Face left
+      }
+      if (keys['d']) {
+        x2 += step; // Move right
+        rotation2 = -270; // Face right
+      }
+
+      // Update positions and rotations
+      player1.style.left = x1 + 'px';
+      player1.style.top = y1 + 'px';
+      player1.style.transform = `rotate(${rotation1}deg)`;
+
+      player2.style.left = x2 + 'px';
+      player2.style.top = y2 + 'px';
+      player2.style.transform = `rotate(${rotation2}deg)`;
+    }, 20);
+  }
+</script>
   </body>
 </html>
