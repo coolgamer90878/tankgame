@@ -53,8 +53,9 @@
       function startGame() {
         // Replace the entire body content with the game screen and include both tanks
         document.body.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
+            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen"
+              style="position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; object-fit: contain; z-index: 0;">
             <img id="player1" src="p1.png" alt="Player 1">
             <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
           </div>
@@ -142,7 +143,7 @@
 
             document.body.appendChild(bullet);
 
-            // FIX: Remove +180 for correct direction
+            // Correct direction for Player 2
             const angle = (rotation2 - 90) * (Math.PI / 180);
             const speed = 10;
             let bulletX = x2 + 50;
