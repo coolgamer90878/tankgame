@@ -11,6 +11,10 @@
         width: 100px;
         height: 100px;
         position: absolute;
+        transition: left 0.08s linear, top 0.08s linear, transform 0.12s cubic-bezier(.4,2,.6,1);
+        filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+        will-change: left, top, transform;
+        z-index: 2;
       }
       html, body {
         margin: 0;
@@ -18,16 +22,20 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        background: #23272e;
       }
       .title {
         text-align: center;
         margin-top: 0;
         padding-top: 20px;
-        background: linear-gradient(to right, black 30%, white 70%);
+        background: linear-gradient(90deg, #000 20%, #4e9af1 50%, #fff 80%);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
         font-family: 'Press Start 2P', cursive;
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        text-shadow: 0 2px 8px #0008;
       }
       button {
         display: block;
@@ -42,6 +50,38 @@
         font-family: 'Press Start 2P', cursive;
         text-transform: uppercase;
         letter-spacing: 1px;
+        box-shadow: 0 2px 8px #0005;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #222;
+      }
+      .game-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #23272e;
+      }
+      .game-bg {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        object-fit: cover;
+        z-index: 0;
+        opacity: 0.95;
+        filter: blur(0.5px) brightness(1.05);
+      }
+      .bullet {
+        width: 14px;
+        height: 14px;
+        background: radial-gradient(circle at 40% 40%, #eee 70%, #888 100%);
+        position: absolute;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px #0007;
+        z-index: 3;
+        pointer-events: none;
+        transition: left 0.04s linear, top 0.04s linear;
       }
     </style>
   </head>
@@ -51,37 +91,30 @@
 
     <script>
       function startGame() {
-        // Replace the entire body content with the game screen and include both tanks
         document.body.innerHTML = `
-          <div style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
-            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen"
-              style="position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; object-fit: contain; z-index: 0;">
+          <div class="game-container" id="gameContainer">
+            <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" class="game-bg">
             <img id="player1" src="p1.png" alt="Player 1">
             <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
           </div>
         `;
 
-        // Reinitialize the player elements and their positions
+        const gameContainer = document.getElementById('gameContainer');
         const player1 = document.getElementById('player1');
         const player2 = document.getElementById('player2');
 
         // Player 1 initial position and controls
-        let x1 = 140;
-        let y1 = 450;
-        let rotation1 = 0;
-
+        let x1 = 850, y1 = 750, rotation1 = 0;
         // Player 2 initial position and controls
-        let x2 = 300;
-        let y2 = 450;
-        let rotation2 = 0;
+        let x2 = 750, y2 = 750, rotation2 = 0;
 
         const step = 5;
         const keys = {};
+        const bullets = [];
 
         // Set initial positions
         player1.style.left = x1 + 'px';
         player1.style.top = y1 + 'px';
-
         player2.style.left = x2 + 'px';
         player2.style.top = y2 + 'px';
 
@@ -89,86 +122,45 @@
         document.addEventListener('keydown', (event) => {
           keys[event.key] = true;
         });
-
         document.addEventListener('keyup', (event) => {
           keys[event.key] = false;
         });
 
         // Player 1 shooting (mouse click)
-        document.addEventListener('click', () => {
-          const bullet = document.createElement('div');
-          bullet.style.width = '10px';
-          bullet.style.height = '10px';
-          bullet.style.backgroundColor = 'gray';
-          bullet.style.position = 'absolute';
-          bullet.style.borderRadius = '0%';
-          bullet.style.left = `${x1 + 49}px`;
-          bullet.style.top = `${y1 + 70}px`;
-
-          document.body.appendChild(bullet);
-
-          const angle = (rotation1 - 90 + 180) * (Math.PI / 180);
-          const speed = 10;
-          let bulletX = x1 + 50;
-          let bulletY = y1 + 45;
-
-          const interval = setInterval(() => {
-            bulletX += Math.cos(angle) * speed;
-            bulletY += Math.sin(angle) * speed;
-            bullet.style.left = `${bulletX}px`;
-            bullet.style.top = `${bulletY}px`;
-            if (
-              bulletX < 0 ||
-              bulletX > window.innerWidth ||
-              bulletY < 0 ||
-              bulletY > window.innerHeight
-            ) {
-              clearInterval(interval);
-              bullet.remove();
-            }
-          }, 20);
+        gameContainer.addEventListener('mousedown', () => {
+          shootBullet(x1, y1, rotation1, 'p1');
         });
 
         // Player 2 shooting (spacebar)
         document.addEventListener('keydown', (event) => {
           if (event.key === ' ') {
-            const bullet = document.createElement('div');
-            bullet.style.width = '10px';
-            bullet.style.height = '10px';
-            bullet.style.backgroundColor = 'gray';
-            bullet.style.position = 'absolute';
-            bullet.style.borderRadius = '0%';
-            bullet.style.left = `${x2 + 49}px`;
-            bullet.style.top = `${y2 + 70}px`;
-
-            document.body.appendChild(bullet);
-
-            // Correct direction for Player 2
-            const angle = (rotation2 - 90) * (Math.PI / 180);
-            const speed = 10;
-            let bulletX = x2 + 50;
-            let bulletY = y2 + 45;
-
-            const interval = setInterval(() => {
-              bulletX += Math.cos(angle) * speed;
-              bulletY += Math.sin(angle) * speed;
-              bullet.style.left = `${bulletX}px`;
-              bullet.style.top = `${bulletY}px`;
-              if (
-                bulletX < 0 ||
-                bulletX > window.innerWidth ||
-                bulletY < 0 ||
-                bulletY > window.innerHeight
-              ) {
-                clearInterval(interval);
-                bullet.remove();
-              }
-            }, 20);
+            shootBullet(x2, y2, rotation2, 'p2');
           }
         });
 
-        // Update tank positions continuously
-        setInterval(() => {
+        function shootBullet(x, y, rotation, player) {
+          const bullet = document.createElement('div');
+          bullet.className = 'bullet';
+          bullet.style.left = `${x + 43}px`;
+          bullet.style.top = `${y + 43}px`;
+          gameContainer.appendChild(bullet);
+
+          // Calculate direction
+          let angle;
+          if (player === 'p1') {
+            angle = (rotation - 90 + 180) * (Math.PI / 180);
+          } else {
+            angle = (rotation - 90) * (Math.PI / 180);
+          }
+          const speed = 13;
+          let bulletX = x + 50;
+          let bulletY = y + 50;
+
+          bullets.push({el: bullet, x: bulletX, y: bulletY, angle, speed});
+        }
+
+        // Smooth movement and animation loop
+        function update() {
           // Player 1 controls (Arrow keys)
           if (keys['ArrowUp']) {
             y1 -= step;
@@ -186,11 +178,10 @@
             x1 += step;
             rotation1 = 270;
           }
-
           // Player 2 controls (WASD keys)
           if (keys['w']) {
             y2 -= step;
-            rotation2 = -0;
+            rotation2 = 0;
           }
           if (keys['s']) {
             y2 += step;
@@ -205,6 +196,12 @@
             rotation2 = -270;
           }
 
+          // Clamp positions to stay in bounds
+          x1 = Math.max(0, Math.min(window.innerWidth - 100, x1));
+          y1 = Math.max(0, Math.min(window.innerHeight - 100, y1));
+          x2 = Math.max(0, Math.min(window.innerWidth - 100, x2));
+          y2 = Math.max(0, Math.min(window.innerHeight - 100, y2));
+
           // Update positions and rotations
           player1.style.left = x1 + 'px';
           player1.style.top = y1 + 'px';
@@ -213,7 +210,27 @@
           player2.style.left = x2 + 'px';
           player2.style.top = y2 + 'px';
           player2.style.transform = `rotate(${rotation2}deg)`;
-        }, 20);
+
+          // Update bullets
+          for (let i = bullets.length - 1; i >= 0; i--) {
+            const b = bullets[i];
+            b.x += Math.cos(b.angle) * b.speed;
+            b.y += Math.sin(b.angle) * b.speed;
+            b.el.style.left = `${b.x}px`;
+            b.el.style.top = `${b.y}px`;
+            // Remove if out of bounds
+            if (
+              b.x < -20 || b.x > window.innerWidth + 20 ||
+              b.y < -20 || b.y > window.innerHeight + 20
+            ) {
+              b.el.remove();
+              bullets.splice(i, 1);
+            }
+          }
+
+          requestAnimationFrame(update);
+        }
+        update();
       }
     </script>
   </body>
