@@ -19,8 +19,8 @@
       html, body {
         margin: 0;
         padding: 0;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         overflow: hidden;
         background: #23272e;
       }
@@ -64,14 +64,16 @@
         background: #23272e;
       }
       .game-bg {
-        position: absolute;
-        left: 0; top: 0;
-        width: 100vw; height: 100vh;
-        object-fit: cover;
-        z-index: 0;
-        opacity: 0.95;
-        filter: blur(0.5px) brightness(1.05);
-      }
+  position: absolute;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  object-position: center center;
+  z-index: 0;
+  opacity: 0.95;
+  filter: blur(0.5px) brightness(1.05);
+}
       .bullet {
         width: 14px;
         height: 14px;
