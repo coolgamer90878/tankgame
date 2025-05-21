@@ -108,6 +108,16 @@
 <body>
   <h1 class="title" id="gameTitle">Tankgame!</h1>
   <button id="startBtn" onclick="startGame()">Start the tank game</button>
+  <p id="controlsText" style="
+  color: red;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  margin-top: 10px;
+  margin-bottom: 0;
+">
+  Player 1: Arrow Keys + Mouse Click to shoot<br>
+  Player 2: WASD + Spacebar to shoot
+</p>
   <div id="gameRoot"></div>
   <script>
     function startGame() {
@@ -314,6 +324,14 @@
             b.el.remove();
             bullets.splice(i, 1);
           }
+        }
+
+        // --- Restart to start menu if both tanks are dead ---
+        if (dead1 && dead2) {
+          document.getElementById('gameRoot').innerHTML = '';
+          document.getElementById('gameTitle').style.display = '';
+          document.getElementById('startBtn').style.display = '';
+          return;
         }
 
         requestAnimationFrame(update);
