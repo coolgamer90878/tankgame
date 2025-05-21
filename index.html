@@ -102,18 +102,7 @@
       width: 100%;
       transition: width 0.2s;
     }
-    .revive-cross {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  z-index: 20;
-  display: none;
-  pointer-events: none;
-  border: 4px solid black;
-  border-radius: 8px;
-  box-shadow: 0 0 24px 8px #000, 0 0 16px 4px #ffe066;
-  object-fit: cover;
-}
+    /* Removed .revive-cross, not needed anymore */
   </style>
 </head>
 <body>
@@ -133,8 +122,6 @@
         <img id="player1" src="p1.png" alt="Player 1">
         <div class="health-bar" id="healthBar2"><div class="health-inner" id="healthInner2"></div></div>
         <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
-        <img id="cross1" class="revive-cross" src="revive.jpg" style="display:none" alt="Revive">
-        <img id="cross2" class="revive-cross" src="revive.jpg" style="display:none" alt="Revive">
       </div>
     `;
       const gameContainer = document.getElementById('gameContainer');
@@ -144,8 +131,6 @@
       const healthBar2 = document.getElementById('healthBar2');
       const healthInner1 = document.getElementById('healthInner1');
       const healthInner2 = document.getElementById('healthInner2');
-      const cross1 = document.getElementById('cross1');
-      const cross2 = document.getElementById('cross2');
 
       let x1 = 850, y1 = 750, rotation1 = 0, health1 = 100, dead1 = false;
       let x2 = 750, y2 = 750, rotation2 = 0, health2 = 100, dead2 = false;
@@ -153,6 +138,9 @@
       const step = 5;
       const keys = {};
       const bullets = [];
+      let respawnTimeout1 = null;
+      let respawnTimeout2 = null;
+      let canShoot2 = true;
 
       player1.style.left = x1 + 'px';
       player1.style.top = y1 + 'px';
@@ -161,21 +149,24 @@
 
       document.addEventListener('keydown', (event) => {
         keys[event.key] = true;
+        // Only fire once per key press for player 2 (spacebar)
+        if (event.key === ' ' && !dead2 && canShoot2) {
+          shootBullet(x2, y2, rotation2, 'p2');
+          canShoot2 = false;
+        }
       });
       document.addEventListener('keyup', (event) => {
         keys[event.key] = false;
+        // Allow shooting again when spacebar is released
+        if (event.key === ' ') {
+          canShoot2 = true;
+        }
       });
 
       // Prevent blue highlight and default behavior on click
       gameContainer.addEventListener('mousedown', (e) => {
         e.preventDefault();
         if (!dead1) shootBullet(x1, y1, rotation1, 'p1');
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === ' ' && !dead2) {
-          shootBullet(x2, y2, rotation2, 'p2');
-        }
       });
 
       function shootBullet(x, y, rotation, player) {
@@ -266,36 +257,6 @@
         healthInner2.style.width = Math.max(0, health2) + '%';
         healthBar2.style.display = dead2 ? 'none' : '';
 
-        // Show/hide and position the cross (revive image)
-        if (dead1) {
-          cross1.style.display = '';
-          cross1.style.left = (x1 + 30) + 'px';
-          cross1.style.top = (y1 + 30) + 'px';
-        } else {
-          cross1.style.display = 'none';
-        }
-        if (dead2) {
-          cross2.style.display = '';
-          cross2.style.left = (x2 + 30) + 'px';
-          cross2.style.top = (y2 + 30) + 'px';
-        } else {
-          cross2.style.display = 'none';
-        }
-
-        // --- REVIVE BY TOUCHING THE IMAGE ---
-        // If player 1 is dead, check if player 2 touches the revive image
-        if (dead1 && !dead2 &&
-            rectsOverlap(x2, y2, 100, 100, x1 + 30, y1 + 30, 40, 40)) {
-          health1 = 100;
-          dead1 = false;
-        }
-        // If player 2 is dead, check if player 1 touches the revive image
-        if (dead2 && !dead1 &&
-            rectsOverlap(x1, y1, 100, 100, x2 + 30, y2 + 30, 40, 40)) {
-          health2 = 100;
-          dead2 = false;
-        }
-
         // --- Bullets only do damage, not revive ---
         for (let i = bullets.length - 1; i >= 0; i--) {
           const b = bullets[i];
@@ -315,6 +276,13 @@
             bullets.splice(i, 1);
             if (health1 <= 0) {
               dead1 = true;
+              if (!respawnTimeout1) {
+                respawnTimeout1 = setTimeout(() => {
+                  health1 = 100;
+                  dead1 = false;
+                  respawnTimeout1 = null;
+                }, 10000);
+              }
             }
             continue;
           }
@@ -329,6 +297,13 @@
             bullets.splice(i, 1);
             if (health2 <= 0) {
               dead2 = true;
+              if (!respawnTimeout2) {
+                respawnTimeout2 = setTimeout(() => {
+                  health2 = 100;
+                  dead2 = false;
+                  respawnTimeout2 = null;
+                }, 10000);
+              }
             }
             continue;
           }
