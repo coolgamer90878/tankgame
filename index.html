@@ -109,15 +109,15 @@
   <h1 class="title" id="gameTitle">Tankgame!</h1>
   <button id="startBtn" onclick="startGame()">Start the tank game</button>
   <p id="controlsText" style="
-  color: red;
-  text-align: center;
-  font-family: 'Press Start 2P', cursive;
-  margin-top: 10px;
-  margin-bottom: 0;
-">
-  Player 1: Arrow Keys + Mouse Click to shoot<br>
-  Player 2: WASD + Spacebar to shoot
-</p>
+    color: red;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    margin-top: 10px;
+    margin-bottom: 0;
+  ">
+    Player 1: Arrow Keys + Mouse Click to shoot<br>
+    Player 2: WASD + Spacebar to shoot
+  </p>
   <div id="gameRoot"></div>
   <script>
     function startGame() {
@@ -267,7 +267,7 @@
         healthInner2.style.width = Math.max(0, health2) + '%';
         healthBar2.style.display = dead2 ? 'none' : '';
 
-        // --- Bullets only do damage, not revive ---
+        // --- Bullets now do NOT hurt tanks ---
         for (let i = bullets.length - 1; i >= 0; i--) {
           const b = bullets[i];
           b.x += Math.cos(b.angle) * b.speed;
@@ -275,48 +275,7 @@
           b.el.style.left = `${b.x}px`;
           b.el.style.top = `${b.y}px`;
 
-          if (
-            b.owner === 'p2' &&
-            !dead1 &&
-            rectsOverlap(b.x, b.y, 14, 14, x1, y1, 100, 100) &&
-            health1 > 0
-          ) {
-            health1 -= 5;
-            b.el.remove();
-            bullets.splice(i, 1);
-            if (health1 <= 0) {
-              dead1 = true;
-              if (!respawnTimeout1) {
-                respawnTimeout1 = setTimeout(() => {
-                  health1 = 100;
-                  dead1 = false;
-                  respawnTimeout1 = null;
-                }, 10000);
-              }
-            }
-            continue;
-          }
-          if (
-            b.owner === 'p1' &&
-            !dead2 &&
-            rectsOverlap(b.x, b.y, 14, 14, x2, y2, 100, 100) &&
-            health2 > 0
-          ) {
-            health2 -= 5;
-            b.el.remove();
-            bullets.splice(i, 1);
-            if (health2 <= 0) {
-              dead2 = true;
-              if (!respawnTimeout2) {
-                respawnTimeout2 = setTimeout(() => {
-                  health2 = 100;
-                  dead2 = false;
-                  respawnTimeout2 = null;
-                }, 10000);
-              }
-            }
-            continue;
-          }
+          // Only remove bullets if they go off screen
           if (
             b.x < -20 || b.x > window.innerWidth + 20 ||
             b.y < -20 || b.y > window.innerHeight + 20
