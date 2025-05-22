@@ -124,16 +124,21 @@
       // Hide the title and button
       document.getElementById('gameTitle').style.display = 'none';
       document.getElementById('startBtn').style.display = 'none';
-
-      document.getElementById('gameRoot').innerHTML = `
+        
+      // ...existing code...
+// ...existing code...
+document.getElementById('gameRoot').innerHTML = `
       <div class="game-container" id="gameContainer">
         <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" class="game-bg">
+        <img src="old.png" alt="Old" id="oldImg" style="position:absolute; left:50%; top:50%; width:120px; z-index:5; transform:translate(-50%,-50%);">
         <div class="health-bar" id="healthBar1"><div class="health-inner" id="healthInner1"></div></div>
         <img id="player1" src="p1.png" alt="Player 1">
         <div class="health-bar" id="healthBar2"><div class="health-inner" id="healthInner2"></div></div>
         <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
       </div>
     `;
+// ...existing code...
+// ...existing code...
       const gameContainer = document.getElementById('gameContainer');
       const player1 = document.getElementById('player1');
       const player2 = document.getElementById('player2');
