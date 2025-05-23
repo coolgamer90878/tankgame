@@ -214,6 +214,9 @@
       function switchToNextScreen() {
         // Change background
         document.querySelector('.game-bg').src = 'firts.png';
+        // Remove old.png if present
+        const oldImg = document.getElementById('oldImg');
+        if (oldImg) oldImg.remove();
         // Move both tanks to bottom of the screen
         y1 = window.innerHeight - 120;
         y2 = window.innerHeight - 120;
