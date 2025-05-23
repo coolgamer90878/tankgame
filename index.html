@@ -129,8 +129,7 @@
       document.getElementById('gameTitle').style.display = 'none';
       document.getElementById('startBtn').style.display = 'none';
         
-      // ...existing code...
-document.getElementById('gameRoot').innerHTML = `
+      document.getElementById('gameRoot').innerHTML = `
       <div class="game-container" id="gameContainer">
         <img src="sr5z2ff1002c5caws3.png" alt="Game Screen" class="game-bg">
         <img src="old.png" alt="Old" id="oldImg" style="position:absolute; left:50%; top:50%; width:200px; z-index:5; transform:translate(-50%,-50%);">
@@ -140,8 +139,7 @@ document.getElementById('gameRoot').innerHTML = `
         <img id="player2" src="pixil-frame-0 (1).png" alt="Player 2">
       </div>
     `;
-// ...existing code...
-// ...existing code...
+
       const gameContainer = document.getElementById('gameContainer');
       const player1 = document.getElementById('player1');
       const player2 = document.getElementById('player2');
@@ -159,6 +157,7 @@ document.getElementById('gameRoot').innerHTML = `
       let respawnTimeout1 = null;
       let respawnTimeout2 = null;
       let canShoot2 = true;
+      let onFirstScreen = true; // Track which screen we're on
 
       player1.style.left = x1 + 'px';
       player1.style.top = y1 + 'px';
@@ -212,6 +211,19 @@ document.getElementById('gameRoot').innerHTML = `
         return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
       }
 
+      function switchToNextScreen() {
+        // Change background
+        document.querySelector('.game-bg').src = 'firts.png';
+        // Move both tanks to bottom of the screen
+        y1 = window.innerHeight - 120;
+        y2 = window.innerHeight - 120;
+        player1.style.left = x1 + 'px';
+        player1.style.top = y1 + 'px';
+        player2.style.left = x2 + 'px';
+        player2.style.top = y2 + 'px';
+        onFirstScreen = false;
+      }
+
       function update() {
         if (!dead1) {
           if (keys['ArrowUp']) {
@@ -248,6 +260,11 @@ document.getElementById('gameRoot').innerHTML = `
             x2 += step;
             rotation2 = -270;
           }
+        }
+
+        // --- SCREEN TRANSITION LOGIC ---
+        if (onFirstScreen && (y1 <= 0 || y2 <= 0)) {
+          switchToNextScreen();
         }
 
         x1 = Math.max(0, Math.min(window.innerWidth - 100, x1));
