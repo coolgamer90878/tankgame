@@ -142,7 +142,7 @@
           color: #fff;
           font-family: 'Press Start 2P', cursive;
           font-size: 13px;
-          padding: 18px 22px;
+          padding: 18px 22px 40px 22px;
           border-radius: 12px;
           border: 2px solid #222;
           z-index: 10;
@@ -152,7 +152,21 @@
         ">
           Hello ${playerName}, you must have been sent here by The Nova Armor Alliance or the N.A.A.<br>
           Well, I'm the old tank. I'm just here to tell you good luck, so good luck!
+          <br>
+          <button id="okOldTank" style="
+            margin-top: 18px;
+            font-size: 14px;
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: none;
+            background: #4e9af1;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #0005;
+          ">OK</button>
         </div>
+        <img src="firts.png" alt="Game Screen" class="game-bg">
         <div class="health-bar" id="healthBar1"><div class="health-inner" id="healthInner1"></div></div>
         <img id="player1" src="p1.png" alt="Player 1">
         <div class="health-bar" id="healthBar2"><div class="health-inner" id="healthInner2"></div></div>
@@ -160,6 +174,13 @@
       </div>
     `;
 
+      // Add this after setting innerHTML:
+      setTimeout(() => {
+        const okBtn = document.getElementById('okOldTank');
+        if (okBtn) {
+          okBtn.onclick = function() {
+            const speech = document.getElementById('oldTankSpeech');
+            if
       const gameContainer = document.getElementById('gameContainer');
       const player1 = document.getElementById('player1');
       const player2 = document.getElementById('player2');
@@ -232,11 +253,22 @@
       }
 
       function switchToNextScreen() {
-        // Change background
-        document.querySelector('.game-bg').src = 'firts.png';
-        // Remove old.png if present
-        const oldImg = document.getElementById('oldImg');
-        if (oldImg) oldImg.remove();
+        // Change background to sr5z2ff1002c5caws3.png
+        document.querySelector('.game-bg').src = 'sr5z2ff1002c5caws3.png';
+        // Add old.png in the center if not already present
+        if (!document.getElementById('oldImg')) {
+          const oldImg = document.createElement('img');
+          oldImg.src = 'old.png';
+          oldImg.alt = 'Old';
+          oldImg.id = 'oldImg';
+          oldImg.style.position = 'absolute';
+          oldImg.style.left = '50%';
+          oldImg.style.top = '50%';
+          oldImg.style.width = '200px';
+          oldImg.style.zIndex = '5';
+          oldImg.style.transform = 'translate(-50%,-50%)';
+          document.getElementById('gameContainer').appendChild(oldImg);
+        }
         // Move both tanks to bottom of the screen
         y1 = window.innerHeight - 120;
         y2 = window.innerHeight - 120;
