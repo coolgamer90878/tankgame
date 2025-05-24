@@ -180,7 +180,17 @@
         if (okBtn) {
           okBtn.onclick = function() {
             const speech = document.getElementById('oldTankSpeech');
-            if
+            if (speech) {
+              speech.style.display = 'none';
+            }
+            const oldImg = document.getElementById('oldImg');
+            if (oldImg) {
+              oldImg.style.display = 'none';
+            }
+          };
+        }
+      }, 0);
+
       const gameContainer = document.getElementById('gameContainer');
       const player1 = document.getElementById('player1');
       const player2 = document.getElementById('player2');
