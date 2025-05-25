@@ -470,7 +470,12 @@
             continue;
           }
           // Remove after 5 seconds or off screen
-          if (Date.now() - b.created > 5000 || b.x < -40 || b.x > window.innerWidth + 40 || b.y < -40 || b.y > window.innerHeight + 40) {
+          if (
+            (b.type === 'track' && Date.now() - b.created > 3000) ||
+            (b.type !== 'track' && Date.now() - b.created > 5000) ||
+            b.x < -40 || b.x > window.innerWidth + 40 ||
+            b.y < -40 || b.y > window.innerHeight + 40
+          ) {
             b.el.remove();
             bossBullets.splice(i, 1);
           }
